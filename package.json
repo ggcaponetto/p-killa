@@ -4,7 +4,10 @@
   "description": "A cross-platform process killer",
   "license": "MIT",
   "repository": "",
-  "main": "dist/index.js",
+  "main": "dist/global/index.js",
+  "bin": {
+    "p-killa": "./dist/global/index.js"
+  },
   "author": {
     "name": "Giuseppe Giulio Caponetto",
     "email": "ggcaponetto@gmail.com",
@@ -15,8 +18,8 @@
     "src"
   ],
   "scripts": {
-    "start-dev": "babel-node dist/index.js",
-    "start-prod": "npm run build && node dist/index.js",
+    "start-dev": "babel-node dist/global/index.js",
+    "start-prod": "npm run build && node dist/global/index.js",
     "test": "jest",
     "coverage": "npm test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",

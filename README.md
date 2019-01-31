@@ -228,6 +228,18 @@ It'll automatically run `test`, `lint`, `docs`, `build`, generate `CHANGELOG.md`
 
 -   [sayHello](#sayhello)
     -   [Parameters](#parameters)
+-   [sayHello](#sayhello-1)
+    -   [Parameters](#parameters-1)
+
+### sayHello
+
+This function says hello.
+
+#### Parameters
+
+-   `name`  Some name to say hello for.
+
+Returns **any** The hello.
 
 ### sayHello
 
