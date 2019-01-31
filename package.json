@@ -6,7 +6,8 @@
   "repository": "",
   "main": "dist/global/index.js",
   "bin": {
-    "p-killa": "./dist/global/index.js"
+    "p-killa": "./dist/global/index.js",
+    "npk": "./dist/global/index.js"
   },
   "author": {
     "name": "Giuseppe Giulio Caponetto",
