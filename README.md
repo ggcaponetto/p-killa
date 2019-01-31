@@ -235,9 +235,9 @@ This function says hello.
 
 #### Parameters
 
--   `name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Some name to say hello for.
+-   `name`  Some name to say hello for.
 
-Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The hello.
+Returns **any** The hello.
 
 ## License
 
