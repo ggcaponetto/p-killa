@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 // @flow
 
-/**
- * This function says hello.
- * @param name Some name to say hello for.
- * @returns The hello.
- */
-// const sayHello = (name: string = "Haz"): string => `Hello, ${name}!`;
-const sayHello = name => `Global Hello, ${name}!`;
+function run(){
+  let argv = process.argv;
+  console.log(`running with arguments: ${argv.join("\n")}`);
+}
 
-console.log(sayHello("giuseppe"));
-
-export default sayHello;
+run();
