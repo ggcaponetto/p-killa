@@ -60,14 +60,39 @@ const listProcessedWin = (parsedOptions) => {
   });
 };
 
+const listProcessedLinux = (parsedOptions) => {
+  return new Promise((res, rej) => {
+    var listPidBatPath = require.resolve(`${__dirname}/../../scripts/linux/list-pid.sh`);
+    let portOption = parsedOptions.filter((option) => {
+      return option.name === "port";
+    })[0];
+    console.log(`executing ${listPidBatPath} with arg:\n ${JSON.stringify(portOption)}`);
+    const command = spawn(listPidBatPath, [`${portOption.value}`]);
+    command.stdout.on('data', (data) => {
+      console.log(`process stdout:\n ${data}`);
+    });
+    command.stderr.on('data', (data) => {
+      console.log(`process stderr:\n ${data}`);
+    });
+    command.on('close', (code) => {
+      if (code === 0) {
+        res(`process exited with code ${code}`);
+      } else {
+        rej(`process exited with code ${code}`);
+      }
+    });
+  });
+};
+
 const listProcesses = (parsedOptions) => {
   let platform = process.platform;
   if (platform === "win32") {
     console.error(`platform ${platform} is supported`);
     return listProcessedWin(parsedOptions);
   } else {
-    console.error(`platform ${platform} not supported yet`);
-    return Promise.reject(`platform ${platform} not supported yet`);
+    return listProcessedLinux(parsedOptions);
+    // console.error(`platform ${platform} not supported yet`);
+    // return Promise.reject(`platform ${platform} not supported yet`);
   }
 };
 

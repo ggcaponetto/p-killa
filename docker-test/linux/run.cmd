@@ -6,5 +6,8 @@ echo D | xcopy ".\..\..\src" "context\src" /s /e
 echo D | xcopy ".\..\..\test" "context\test" /s /e
 xcopy ".\..\..\**" context
 echo "copied project files into docker context"
-docker build -f ./Dockerfile -t ggcaponetto/p-killa-test-linux .
-docker run -p 3333:3333 -d ggcaponetto/p-killa-test-linux
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker build -f ./Dockerfile -t ggcaponetto/p-killa-test-linux:latest .
+docker run -d ggcaponetto/p-killa-test-linux:latest
+docker run -it ggcaponetto/p-killa-test-linux:latest bash
