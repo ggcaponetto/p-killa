@@ -7,4 +7,4 @@ echo D | xcopy ".\..\..\test" "context\test" /s /e
 xcopy ".\..\..\**" context
 echo "copied project files into docker context"
 docker build -f ./Dockerfile --tag ggcaponetto/p-killa-test-linux .
-docker run -it --name ggcaponetto/p-killa-test-linux bash
+docker run -it ggcaponetto/p-killa-test-linux bash

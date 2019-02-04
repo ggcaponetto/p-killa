@@ -23,7 +23,7 @@
     "start-prod": "npm run build && node dist/global/index.js",
     "build-install-global": "npm run build && npm i -g .",
     "auto-build-install": "node ./node_modules/nodemon/bin/nodemon.js --watch src --exec \"npm run build-install-global\"",
-    "test": "jest",
+    "test": "jest \"p-killa/test/.*.test.js\"",
     "coverage": "npm test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
     "lint": "eslint .",

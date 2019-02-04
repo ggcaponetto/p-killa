@@ -2,27 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27c1db89-cabc-4091-904b-700949007576" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-test/linux/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/docker-test/linux/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/.babelrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/.eslintignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/.eslintrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/.flowconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/.travis.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/CHANGELOG.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/scripts/linux/list-pid.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/scripts/win/list-pid.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/src/global/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/test/index.test.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/yarn.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-test/linux/context/src/global/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/docker-test/linux/context/src/global/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-test/linux/run.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/docker-test/linux/run.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/global/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/global/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/index.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/index.test.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,11 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="23" column="25" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="25" />
+            <state relative-caret-position="87">
+              <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -44,11 +31,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/global/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="107" column="20" lean-forward="true" selection-start-line="107" selection-start-column="20" selection-end-line="107" selection-end-column="20" />
+            <state relative-caret-position="-29">
+              <caret line="88" column="55" lean-forward="true" selection-start-line="88" selection-start-column="55" selection-end-line="88" selection-end-column="55" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/index.test.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
@@ -71,7 +67,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/docker-test/linux/run.cmd">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="170">
@@ -83,8 +79,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/docker-test/linux/Dockerfile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="23" selection-start-line="15" selection-start-column="23" selection-end-line="15" selection-end-column="23" />
+            <state relative-caret-position="272">
+              <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-end-line="17" />
             </state>
           </provider>
         </entry>
@@ -113,13 +109,14 @@
         <option value="$PROJECT_DIR$/dist/index.js" />
         <option value="$PROJECT_DIR$/src/index.js" />
         <option value="$PROJECT_DIR$/scripts/win/list-pid.bat" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/docker-test/linux/exclude.txt" />
         <option value="$PROJECT_DIR$/docker-test/windows/Dockerfile" />
         <option value="$PROJECT_DIR$/scripts/linux/list-pid.sh" />
+        <option value="$PROJECT_DIR$/docker-test/linux/run.cmd" />
         <option value="$PROJECT_DIR$/docker-test/linux/Dockerfile" />
         <option value="$PROJECT_DIR$/src/global/index.js" />
-        <option value="$PROJECT_DIR$/docker-test/linux/run.cmd" />
+        <option value="$PROJECT_DIR$/test/index.test.js" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -133,7 +130,7 @@
     <option name="x" value="85" />
     <option name="y" value="15" />
     <option name="width" value="975" />
-    <option name="height" value="1168" />
+    <option name="height" value="1170" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -141,6 +138,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -151,36 +149,12 @@
             <path>
               <item name="p-killa" type="b2602c69:ProjectViewProjectNode" />
               <item name="p-killa" type="462c0819:PsiDirectoryNode" />
-              <item name="docker-test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="p-killa" type="b2602c69:ProjectViewProjectNode" />
-              <item name="p-killa" type="462c0819:PsiDirectoryNode" />
-              <item name="docker-test" type="462c0819:PsiDirectoryNode" />
-              <item name="linux" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="p-killa" type="b2602c69:ProjectViewProjectNode" />
-              <item name="p-killa" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="p-killa" type="b2602c69:ProjectViewProjectNode" />
-              <item name="p-killa" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
-              <item name="linux" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="p-killa" type="b2602c69:ProjectViewProjectNode" />
-              <item name="p-killa" type="462c0819:PsiDirectoryNode" />
-              <item name="scripts" type="462c0819:PsiDirectoryNode" />
-              <item name="win" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -195,6 +169,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -276,18 +251,19 @@
       <workItem from="1549021737925" duration="4678000" />
       <workItem from="1549038274781" duration="3327000" />
       <workItem from="1549228933075" duration="4721000" />
-      <workItem from="1549265226816" duration="4390000" />
+      <workItem from="1549265226816" duration="4453000" />
+      <workItem from="1549307889749" duration="2132000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32710000" />
+    <option name="totallyTimeSpent" value="34905000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+    <frame x="-6" y="-6" width="1549" height="837" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13272922" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13413817" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
@@ -295,14 +271,14 @@
       <window_info id="Favorites" order="5" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.47686118" weight="0.2251462" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.41515762" visible="true" weight="0.41812867" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.5231388" side_tool="true" visible="true" weight="0.34117648" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.5848424" side_tool="true" visible="true" weight="0.41812867" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.43125418" side_tool="true" weight="0.36549708" />
       <window_info anchor="bottom" id="Version Control" order="11" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -318,15 +294,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/nod" />
+    </ignored-roots>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/dist/pkilla/index.js" />
     <entry file="file://$PROJECT_DIR$/dist/pkilla/index.js.flow" />
     <entry file="file://$PROJECT_DIR$/src/p-killa/index.js" />
     <entry file="file://$PROJECT_DIR$/dist/p-killa/index.js" />
     <entry file="file://$PROJECT_DIR$/dist/index.js" />
-    <entry file="file://$PROJECT_DIR$/test/index.test.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/nodemon/bin/nodemon.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -339,10 +317,10 @@
     <entry file="file://$PROJECT_DIR$/docker-test/linux/exclude.txt" />
     <entry file="file://$PROJECT_DIR$/docker-test/windows/context/src/global/index.js" />
     <entry file="file://$PROJECT_DIR$/docker-test/windows/Dockerfile" />
-    <entry file="file://$PROJECT_DIR$/package.json">
+    <entry file="file://$PROJECT_DIR$/docker-test/linux/context/scripts/linux/list-pid.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="25" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="25" />
+        <state relative-caret-position="34">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
@@ -360,34 +338,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docker-test/linux/context/scripts/linux/list-pid.sh">
+    <entry file="file://$PROJECT_DIR$/docker-test/linux/run.cmd">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        <state relative-caret-position="170">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docker-test/linux/Dockerfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="25" lean-forward="true" selection-start-line="16" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/index.test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/global/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="107" column="20" lean-forward="true" selection-start-line="107" selection-start-column="20" selection-end-line="107" selection-end-column="20" />
+        <state relative-caret-position="-29">
+          <caret line="88" column="55" lean-forward="true" selection-start-line="88" selection-start-column="55" selection-end-line="88" selection-end-column="55" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docker-test/linux/Dockerfile">
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="23" selection-start-line="15" selection-start-column="23" selection-end-line="15" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/docker-test/linux/run.cmd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+        <state relative-caret-position="87">
+          <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
         </state>
       </provider>
     </entry>
