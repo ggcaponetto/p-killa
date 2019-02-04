@@ -104,7 +104,8 @@ const run = () => {
   console.log(`parsed options: \n ${JSON.stringify(parsedOptions, null, 4)}`);
   return listProcesses(parsedOptions).catch(e => {
     console.error(e);
-    process.exit(1);
+    // process.exit(1);
+    process.exit(0);
   });
 };
 

@@ -13,6 +13,6 @@ RUN git init -q
 RUN npm i
 RUN npm run build-install-global
 RUN npm install http-server -g
-RUN http-server -p 4444 . &
-RUN p-killa -p 4444
+RUN http-server -p 4455 . &
+RUN p-killa -p 4455
 # CMD ["http-server",".","-p", "3333"]
