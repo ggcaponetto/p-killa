@@ -8,3 +8,5 @@ xcopy ".\..\..\**" context
 echo "copied project files into docker context"
 docker build -f ./Dockerfile --tag ggcaponetto/p-killa-test-linux .
 docker run -it ggcaponetto/p-killa-test-linux bash
+rd context /s /q
+echo "cleaned up docker context"

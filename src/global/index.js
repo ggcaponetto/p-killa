@@ -83,6 +83,29 @@ const listProcessedLinux = (parsedOptions) => {
   });
 };
 
+const startHttpServer = (port, path, detached) => {
+  return new Promise((res, rej) => {
+    console.log(`executing "${"http-server"}" module.`);
+    const command = spawn("node", ["http-server", `${port}`, `${path}`]);
+    command.stdout.on('data', (data) => {
+      console.log(`process stdout:\n ${data}`);
+      if(detached){
+        res(data);
+      }
+    });
+    command.stderr.on('data', (data) => {
+      console.log(`process stderr:\n ${data}`);
+    });
+    command.on('close', (code) => {
+      if (code === 0) {
+        res(`process exited with code ${code}`);
+      } else {
+        rej(`process exited with code ${code}`);
+      }
+    });
+  });
+};
+
 const listProcesses = (parsedOptions) => {
   let platform = process.platform;
   if (platform === "win32") {
@@ -109,3 +132,7 @@ const run = () => {
 };
 
 run();
+
+module.exports = {
+  startHttpServer
+};
