@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // @flow
 const {spawn} = require('child_process');
+const {fork} = require('child_process');
+
 
 const getArgvOptions = () => {
   let options = [
@@ -85,18 +87,24 @@ const listProcessedLinux = (parsedOptions) => {
 
 const startHttpServer = (port, relPath, detached) => {
   return new Promise((res, rej) => {
-    console.log(`executing "${"http-server"}" module.`);
+    console.log(`executing "${"http-server"}" module. starting server on port ${port}`);
     let httpServerPath = require.resolve(`${__dirname}/../../node_modules/http-server/bin/http-server`);
     let httpServerDirectoryToServe = require.resolve(`${__dirname}/${relPath}`);
-    const command = spawn("node", [`${httpServerPath}`, `-p`, `${port}`, `${httpServerDirectoryToServe}`]);
+    const command = fork(
+      "node",
+      [`${httpServerPath}`,
+        `-p`,
+        `${port}`,
+        `${httpServerDirectoryToServe}`],
+      {detached: true, silent: true} //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+    );
     command.stdout.on('data', (data) => {
-      console.log(`process stdout:\n ${data}`);
-      if(detached){
-        res(data);
-      }
+      console.log(`process stdout:\n ${data.toString()}`);
+      res(data.toString());
     });
     command.stderr.on('data', (data) => {
-      console.log(`process stderr:\n ${data}`);
+      console.warn(`process stderr:\n ${data.toString()}`);
+      rej(data.toString());
     });
     command.on('close', (code) => {
       if (code === 0) {

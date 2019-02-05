@@ -1,6 +1,6 @@
 import * as functions from "../src/global/functions";
 
-test("run", () => {
+test("run", async(done)=>{
   let passed = false;
   let ports = [
     3000, 3001, 3003
@@ -11,12 +11,12 @@ test("run", () => {
     let portPromise = functions.startHttpServer(p, ".", true);
     portPromises.push(portPromise);
   });
-  return Promise.all(portPromises).then(values => {
+  return await Promise.all(portPromises).then(values => {
     console.log("got startHttpServer values", values);
     passed = true;
-    expect(passed);
+    done();
   }).catch((e) => {
     console.log("got startHttpServer error", e);
-    expect(passed);
+    done();
   });
 });
