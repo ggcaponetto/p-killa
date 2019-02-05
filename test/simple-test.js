@@ -1,4 +1,4 @@
-import {startHttpServer} from "../src/global/index";
+import * as functions from "../src/global/functions.js";
 
 let passed = false;
 let ports = [
@@ -6,14 +6,14 @@ let ports = [
 ];
 let portPromises = [];
 ports.forEach(p => {
-  let portPromise = startHttpServer(p, ".", true);
+  console.log("startHttpServer is openting port", p);
+  let portPromise = functions.startHttpServer(p, ".", true);
   portPromises.push(portPromise);
 });
 Promise.all(portPromises).then(values => {
   console.log("got startHttpServer values", values);
   passed = true;
-  expect(passed);
+  process.exit(0);
 }).catch((e) => {
   console.log("got startHttpServer error", e);
-  expect(passed);
 });
