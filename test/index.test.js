@@ -4,7 +4,7 @@ const testFilePath = __dirname+"/index.test.js";
 const testFileName = "/index.test.js";
 
 let ports = [
-  3000, 3001, 3002
+  3000, 3001, 3002, 3003, 3004
 ];
 test(`p-kill is able to open ports: ${ports.join(",")}`, async (done)=>{
   let portPromises = [];
@@ -34,10 +34,13 @@ test(`p-kill is able to list processes on given ports: ${ports.join(",")}`, asyn
     let argvOptions = functions.getArgvOptions();
     let parsedOptions = functions.parseArgv(mockArgv, argvOptions);
     console.log(`${testFileName} listProcesses is listing processes on port ${port}`);
-    let listProcessPromise = functions.listProcesses(parsedOptions);
+    let listProcessPromise = functions.listProcesses(parsedOptions).then(({command, output}) => {
+      return output;
+    });
     listProcessPromises.push(listProcessPromise);
   });
-  await Promise.all(listProcessPromises).then(() => {
+  await Promise.all(listProcessPromises).then((values) => {
+    console.log(`${testFileName} listProcesses finished: \n`, values);
     done();
   });
 });

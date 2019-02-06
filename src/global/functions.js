@@ -37,7 +37,7 @@ const parseArgv = (argv, argvOptions) => {
   return options;
 };
 
-const startHttpServer = (port, relPath) => {
+const startHttpServer = (port, relPath, ready) => {
   return new Promise((res, rej) => {
     try {
       console.log(`executing "${"http-server"}" module. starting server on port ${port}`);
@@ -73,29 +73,28 @@ const startHttpServer = (port, relPath) => {
 
 const listProcesses = (parsedOptions) => {
   const listProcessedWin = (parsedOptions) => {
+    let output = [];
     return new Promise((res) => {
       var listPidBatPath = require.resolve(`${__dirname}/../../scripts/win/list-pid.bat`);
       let portOption = parsedOptions.filter((option) => {
         return option.name === "port";
       })[0];
-      let shellCommand = `${listPidBatPath} & pause`;
+      let shellCommand = `${listPidBatPath} ${portOption.value}`;
       console.log(`executing: "${shellCommand}"`);
       const command = spawn(
         shellCommand,
         {
-          shell: true,
-          stdio: "inherit",
-          detached: true
+          shell: true
         } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
       );
-      command.on('data', (data) => {
+      command.stdout.on('data', (data) => {
         console.log(`process stdout:\n ${data}`);
+        output.push(data.toString());
       });
       command.on('close', (code) => {
-        console.log(`process stdout:\n ${data}`);
+        console.log(`process close:\n ${code}`);
+        res({command, output});
       });
-      command.unref();
-      res(command);
     });
   };
   const listProcessedLinux = (parsedOptions) => {

@@ -1,3 +1,2 @@
 @echo off
-netstat -ano
-pause
+netstat -ano | findstr %1
