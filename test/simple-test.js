@@ -6,7 +6,7 @@ let ports = [
 let portPromises = [];
 ports.forEach(p => {
   console.log("startHttpServer is openting port:", p);
-  let portPromise = functions.startHttpServer(p, ".", true);
+  let portPromise = functions.startHttpServer(p, ".");
   portPromises.push(portPromise);
 });
 Promise.all(portPromises).then(values => {

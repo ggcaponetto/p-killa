@@ -37,94 +37,105 @@ const parseArgv = (argv, argvOptions) => {
   return options;
 };
 
-const listProcessedWin = (parsedOptions) => {
+const startHttpServer = (port, relPath) => {
   return new Promise((res, rej) => {
-    var listPidBatPath = require.resolve(`${__dirname}/../../scripts/win/list-pid.bat`);
-    let portOption = parsedOptions.filter((option) => {
-      return option.name === "port";
-    })[0];
-    console.log(`executing ${listPidBatPath} with arg:\n ${JSON.stringify(portOption)}`);
-    const command = spawn(listPidBatPath, [`${portOption.value}`]);
-    command.stdout.on('data', (data) => {
-      console.log(`process stdout:\n ${data}`);
-    });
-    command.stderr.on('data', (data) => {
-      console.log(`process stderr:\n ${data}`);
-    });
-    command.on('close', (code) => {
-      if (code === 0) {
-        res(`process exited with code ${code}`);
-      } else {
-        rej(`process exited with code ${code}`);
-      }
-    });
-  });
-};
-
-const listProcessedLinux = (parsedOptions) => {
-  return new Promise((res, rej) => {
-    var listPidBatPath = require.resolve(`${__dirname}/../../scripts/linux/list-pid.sh`);
-    let portOption = parsedOptions.filter((option) => {
-      return option.name === "port";
-    })[0];
-    console.log(`executing ${listPidBatPath} with arg:\n ${JSON.stringify(portOption)}`);
-    const command = spawn(listPidBatPath, [`${portOption.value}`]);
-    command.stdout.on('data', (data) => {
-      console.log(`process stdout:\n ${data}`);
-    });
-    command.stderr.on('data', (data) => {
-      console.log(`process stderr:\n ${data}`);
-    });
-    command.on('close', (code) => {
-      if (code === 0) {
-        res(`process exited with code ${code}`);
-      } else {
-        rej(`process exited with code ${code}`);
-      }
-    });
-  });
-};
-
-const startHttpServer = (port, relPath, detached) => {
-  return new Promise((res, rej) => {
-    console.log(`executing "${"http-server"}" module. starting server on port ${port}`);
-    let httpServerPath = require.resolve(`${__dirname}/../../node_modules/http-server/bin/http-server`);
-    let httpServerDirectoryToServe = require.resolve(`${__dirname}/${relPath}`);
-    const command = fork(
-      "node",
-      [`${httpServerPath}`,
-        `-p`,
-        `${port}`,
-        `${httpServerDirectoryToServe}`],
-      {detached: true, silent: true} //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
-    );
-    command.stdout.on('data', (data) => {
-      console.log(`process stdout:\n ${data.toString()}`);
-      res(data.toString());
-    });
-    command.stderr.on('data', (data) => {
-      console.warn(`process stderr:\n ${data.toString()}`);
-      rej(data.toString());
-    });
-    command.on('close', (code) => {
-      if (code === 0) {
-        res(`process exited with code ${code}`);
-      } else {
-        rej(`process exited with code ${code}`);
-      }
-    });
+    try {
+      console.log(`executing "${"http-server"}" module. starting server on port ${port}`);
+      let httpServerPath = require.resolve(`${__dirname}/../../node_modules/http-server/bin/http-server`);
+      let httpServerDirectoryToServe = require.resolve(`${__dirname}/${relPath}`);
+      let shellCommand = `node ${httpServerPath} ${httpServerPath} -p ${port} ${httpServerDirectoryToServe}`;
+      console.log(`executing: "${shellCommand}"`);
+      const command = spawn(
+        shellCommand,
+        {
+          shell: true,
+          stdio: "inherit",
+          detached: true
+        } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+      );
+      command.on('data', (data) => {
+        console.log(`process stdout:\n ${data.toString()}`);
+      });
+      command.on('close', (code) => {});
+      /*
+      If the unref function is called on the detached process, the parent process can exit independently of the child.
+      This can be useful if the child is executing a long-running process, but to keep it running in the background the
+      child’s stdio configurations also have to be independent of the parent.
+      */
+      command.unref();
+      res(command);
+    }catch (e) {
+      console.error(e);
+      rej(e.message);
+    }
   });
 };
 
 const listProcesses = (parsedOptions) => {
+  const listProcessedWin = (parsedOptions) => {
+    return new Promise((res) => {
+      var listPidBatPath = require.resolve(`${__dirname}/../../scripts/win/list-pid.bat`);
+      let portOption = parsedOptions.filter((option) => {
+        return option.name === "port";
+      })[0];
+      let shellCommand = `${listPidBatPath} & pause`;
+      console.log(`executing: "${shellCommand}"`);
+      const command = spawn(
+        shellCommand,
+        {
+          shell: true,
+          stdio: "inherit",
+          detached: true
+        } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+      );
+      command.on('data', (data) => {
+        console.log(`process stdout:\n ${data}`);
+      });
+      command.on('close', (code) => {
+        console.log(`process stdout:\n ${data}`);
+      });
+      command.unref();
+      res(command);
+    });
+  };
+  const listProcessedLinux = (parsedOptions) => {
+    return new Promise((res, rej) => {
+      var listPidBatPath = require.resolve(`${__dirname}/../../scripts/linux/list-pid.sh`);
+      let portOption = parsedOptions.filter((option) => {
+        return option.name === "port";
+      })[0];
+      console.log(`executing ${listPidBatPath} with arg:\n ${JSON.stringify(portOption)}`);
+      const command = spawn(listPidBatPath, [`${portOption.value}`]);
+      command.stdout.on('data', (data) => {
+        console.log(`process stdout:\n ${data}`);
+      });
+      command.stderr.on('data', (data) => {
+        console.log(`process stderr:\n ${data}`);
+      });
+      command.on('close', (code) => {
+        if (code === 0) {
+          res(`process exited with code ${code}`);
+        } else {
+          rej(`process exited with code ${code}`);
+        }
+      });
+    });
+  };
   let platform = process.platform;
   if (platform === "win32") {
-    console.error(`platform ${platform} is supported`);
+    console.info(`platform ${platform} is supported`);
     return listProcessedWin(parsedOptions);
-  } else {
+  } else if(platform === "linux"){
+    console.info(`platform ${platform} is supported`);
     return listProcessedLinux(parsedOptions);
-    // console.error(`platform ${platform} not supported yet`);
-    // return Promise.reject(`platform ${platform} not supported yet`);
+  } else {
+    console.warn(`platform ${platform} might not be supported. applying linux shell commands and syntax`);
+    try {
+      return listProcessedLinux(parsedOptions);
+    }catch (e) {
+      console.error(`platform ${platform} is not supported`);
+      console.error(e);
+    }
   }
 };
 
@@ -143,5 +154,8 @@ const run = () => {
 
 module.exports = {
   startHttpServer,
+  listProcesses,
+  getArgvOptions,
+  parseArgv,
   run
 };
