@@ -145,26 +145,104 @@ const listProcessesOnPort = (port) => {
   }
 };
 
+const extractPidFromOutput = (output) => {
+  let platform = process.platform;
+  if (platform === "win32") {
+    console.info(`platform ${platform} is supported`);
+    console.info(`extractPidFromOutput`, output);
+    let line = output[0].trim();
+    let columns = line.split(" ").filter((element) => {return element.trim() !== ""});
+    return parseInt(columns[4]);
+  } else if (platform === "linux") {
+    console.info(`platform ${platform} is supported`);
+    console.info(`extractPidFromOutput`, output);
+    let line = output[0].trim();
+    let columns = line.split(" ").filter((element) => {return element.trim() !== ""});
+    return parseInt(columns[6].split("/")[0]);
+  } else {
+    console.warn(`platform ${platform} might not be supported. applying linux shell commands and syntax.`);
+    try {
+      // todo
+    } catch (e) {
+      console.error(`platform ${platform} is not supported`);
+      console.error(e);
+    }
+  }
+};
+
 const getPidOfProcessOnPort = (port) => {
   let processListPromise = listProcessesOnPort(port);
   return processListPromise.then(({command, output}) => {
     console.info(`getPidOfProcessOnPort - the process list for processes listening on port ${port} is: \n type:${typeof output} \n${output}`);
-      return output;
+      return extractPidFromOutput(output);
   });
 };
 
-const killProcesses = () => {
+const killProcessesByPidLinux = (pid) => {
+  let processTag = `killProcessesByPidLinux`;
+  let output = [];
+  return new Promise((res) => {
+    var listPidBatPath = require.resolve(`${__dirname}/../../scripts/linux/kill-pid.sh`);
+    let shellCommand = `${listPidBatPath} ${pid}`;
+    console.log(`executing: "${shellCommand}"`);
+    const command = spawn(
+      shellCommand,
+      {
+        shell: true
+      });
+    command.stdout.on('data', (data) => {
+      console.log(`process "${processTag}" having pid ${command.pid} stdout:\n ${data}`);
+      output.push(data.toString());
+    });
+    command.stderr.on('data', (data) => {
+      console.log(`process "${processTag}" having pid ${command.pid} stderr:\n ${data}`);
+    });
+    command.on('close', (code) => {
+      console.log(`process "${processTag}" having pid ${command.pid} closed with exit code ${code}`);
+      res({command, output});
+    });
+  });
+};
+
+const killProcessesByPidWin = (pid) => {
+  let processTag = `killProcessesByPidWin`;
+  let output = [];
+  return new Promise((res) => {
+    let listPidBatPath = require.resolve(`${__dirname}/../../scripts/win/kill-pid.bat`);
+    let shellCommand = `${listPidBatPath} ${pid}`;
+    console.log(`executing: "${shellCommand}"`);
+    const command = spawn(
+      shellCommand,
+      {
+        shell: true
+      } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+    );
+    command.stdout.on('data', (data) => {
+      console.log(`process "${processTag}" having pid ${command.pid} stdout:\n ${data}`);
+      output.push(data.toString());
+    });
+    command.stderr.on('data', (data) => {
+      console.log(`process "${processTag}" having pid ${command.pid} stderr:\n ${data}`);
+    });
+    command.on('close', (code) => {
+      console.log(`process "${processTag}" having pid ${command.pid} cloded with exit code ${code}`);
+      res({command, output});
+    });
+  });
+};
+
+const killProcessByPid = (pid) => {
   let platform = process.platform;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
-    return null; //todo
+    return killProcessesByPidWin(pid);
   } else if (platform === "linux") {
     console.info(`platform ${platform} is supported`);
-    return null; //todo
+    return killProcessesByPidLinux(pid);
   } else {
     console.warn(`platform ${platform} might not be supported. applying linux shell commands and syntax.`);
     try {
-      return null; //todo
+      return killProcessesByPidLinux(pid);
     } catch (e) {
       console.error(`platform ${platform} is not supported`);
       console.error(e);
@@ -189,6 +267,7 @@ module.exports = {
   startHttpServer,
   listProcessesOnPort,
   getPidOfProcessOnPort,
+  killProcessByPid,
   getArgvOptions,
   parseArgv,
   run

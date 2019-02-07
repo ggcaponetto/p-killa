@@ -4,6 +4,7 @@ dist
 node_modules
 *.log
 
+.idea
 docker-test/linux/context
 docker-test/linux/dist
 docker-test/linux/coverage
