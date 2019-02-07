@@ -1,6 +1,6 @@
 {
   "name": "p-killa",
-  "version": "0.0.1",
+  "version": "0.0.1-alpa",
   "description": "A cross-platform process killer",
   "license": "MIT",
   "repository": "",
@@ -24,6 +24,8 @@
     "build-install-global": "npm run build && npm i -g .",
     "auto-build-install": "node ./node_modules/nodemon/bin/nodemon.js --watch src --exec \"npm run build-install-global\"",
     "test": "jest --findRelatedTests --runInBand ./test/index.test.js",
+    "test:temp": "jest --findRelatedTests --runInBand ./test/kill.test.js",
+    "test:silent": "jest --findRelatedTests --runInBand --silent ./test/index.test.js",
     "coverage": "npm test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
     "lint": "eslint .",
@@ -50,7 +52,12 @@
     ]
   },
   "keywords": [
-    "generator-nod"
+    "port",
+    "process",
+    "kill",
+    "node",
+    "p-killa",
+    "npk"
   ],
   "dependencies": {
     "http-server": "^0.11.1"

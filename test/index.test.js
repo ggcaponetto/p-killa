@@ -4,7 +4,7 @@ const testFilePath = __dirname+"/index.test.js";
 const testFileName = "/index.test.js";
 
 let ports = [
-  3000, 3001
+  3000, 3001, 3002
 ];
 test(`p-kill is able to open ports: ${ports.join(",")}`, async (done)=>{
   let portPromises = [];
@@ -27,25 +27,17 @@ test(`p-kill is able to list processes on given ports: ${ports.join(",")}`, asyn
   let promise = new Promise((res, rej) => {
     setTimeout(() => {
       ports.forEach((port) => {
-        let mockArgv = [
-          null,
-          `p-killa`,
-          `-p`,
-          `${port}`
-        ];
-        let argvOptions = functions.getArgvOptions();
-        let parsedOptions = functions.parseArgv(mockArgv, argvOptions);
         console.log(`${testFileName} listProcesses is listing processes on port ${port}`);
-        let listProcessPromise = functions.listProcesses(parsedOptions).then(({command, output}) => {
+        let listProcessPromise = functions.listProcessesOnPort(port).then(({command, output}) => {
           return output;
         });
         listProcessPromises.push(listProcessPromise);
       });
       return Promise.all(listProcessPromises).then((values) => {
-        console.log(`${testFileName} listProcesses finished: \n`, JSON.stringify(values));
-        done();
+        console.log(`${testFileName} listProcesses finished: \n`, values);
+        res()
       });
     }, 1000); // the setTimeout is a quick and diry workaround to ensure that the ports are opened (server bootup)
   });
-  await promise;
+  await promise.then(() => {done();});
 });
