@@ -1,26 +1,22 @@
 #!/usr/bin/env node
-// @flow
-const {spawn} = require('child_process');
-const {fork} = require('child_process');
-
+const { spawn } = require("child_process");
+// const { fork } = require("child_process");
 
 const getArgvOptions = () => {
-  let options = [
+  const options = [
     {
       name: "port",
-      identifiers: [
-        "--port", "-p"
-      ]
+      identifiers: ["--port", "-p"]
     }
   ];
   return options;
 };
 
 const parseArgv = (argv, argvOptions) => {
-  let options = [];
+  const options = [];
   argv.forEach((arg, argIndex) => {
     // console.log(`processing arg: \n ${arg}`);
-    argvOptions.forEach((argvOption) => {
+    argvOptions.forEach(argvOption => {
       // console.log(`processing argvOption: \n ${JSON.stringify(argvOption, null, 4)}`);
       let runsWithOption = false;
       argvOption.identifiers.forEach(identifier => {
@@ -30,7 +26,7 @@ const parseArgv = (argv, argvOptions) => {
       });
       // console.log(`runs with option ${argvOption.name} (${argvOption.identifiers.join(" or ")}): ${runsWithOption}`);
       if (runsWithOption) {
-        options.push({...argvOption, value: argv[argIndex + 1]});
+        options.push({ ...argvOption, value: argv[argIndex + 1] });
       }
     });
   });
@@ -40,10 +36,16 @@ const parseArgv = (argv, argvOptions) => {
 const startHttpServer = (port, relPath) => {
   return new Promise((res, rej) => {
     try {
-      console.log(`executing "${"http-server"}" module. starting server on port ${port}`);
-      let httpServerPath = require.resolve(`${__dirname}/../../node_modules/http-server/bin/http-server`);
-      let httpServerDirectoryToServe = require.resolve(`${__dirname}/${relPath}`);
-      let shellCommand = `node ${httpServerPath} ${httpServerPath} -p ${port} ${httpServerDirectoryToServe}`;
+      console.log(
+        `executing "${"http-server"}" module. starting server on port ${port}`
+      );
+      const httpServerPath = require.resolve(
+        `${__dirname}/../../node_modules/http-server/bin/http-server`
+      );
+      const httpServerDirectoryToServe = require.resolve(
+        `${__dirname}/${relPath}`
+      );
+      const shellCommand = `node ${httpServerPath} ${httpServerPath} -p ${port} ${httpServerDirectoryToServe}`;
       console.log(`executing: "${shellCommand}"`);
       const command = spawn(
         shellCommand,
@@ -51,12 +53,12 @@ const startHttpServer = (port, relPath) => {
           shell: true,
           stdio: "ignore",
           detached: true
-        } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+        } // https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
       );
-      command.on('data', (data) => {
+      command.on("data", data => {
         console.log(`process stdout:\n ${data.toString()}`);
       });
-      command.on('close', (code) => {
+      command.on("close", code => {
         console.log(`process cloded with exit code ${code.toString()}`);
       });
       /*
@@ -73,194 +75,246 @@ const startHttpServer = (port, relPath) => {
   });
 };
 
-const listProcessesOnPortWin = (port) => {
-  let processTag = `listProcessesOnPortWin`;
-  let output = [];
-  return new Promise((res) => {
-    let listPidBatPath = require.resolve(`${__dirname}/../../scripts/win/list-pid.bat`);
-    let shellCommand = `${listPidBatPath} ${port}`;
-    console.log(`executing: "${shellCommand}"`);
-    const command = spawn(
-      shellCommand,
-      {
-        shell: true
-      } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+const listProcessesOnPortWin = port => {
+  const processTag = `listProcessesOnPortWin`;
+  const output = [];
+  return new Promise(res => {
+    const listPidBatPath = require.resolve(
+      `${__dirname}/../../scripts/win/list-pid.bat`
     );
-    command.stdout.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stdout:\n ${data}`);
-      output.push(data.toString());
-    });
-    command.stderr.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stderr:\n ${data}`);
-    });
-    command.on('close', (code) => {
-      console.log(`process "${processTag}" having pid ${command.pid} cloded with exit code ${code}`);
-      res({command, output});
-    });
-  });
-};
-
-const listProcessesOnPortLinux = (port) => {
-  let processTag = `listProcessesOnPortLinux`;
-  let output = [];
-  return new Promise((res) => {
-    var listPidBatPath = require.resolve(`${__dirname}/../../scripts/linux/list-pid.sh`);
-    let shellCommand = `${listPidBatPath} ${port}`;
+    const shellCommand = `${listPidBatPath} ${port}`;
     console.log(`executing: "${shellCommand}"`);
     const command = spawn(
       shellCommand,
       {
         shell: true
-      });
-    command.stdout.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stdout:\n ${data}`);
+      } // https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+    );
+    command.stdout.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+      );
       output.push(data.toString());
     });
-    command.stderr.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stderr:\n ${data}`);
+    command.stderr.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+      );
     });
-    command.on('close', (code) => {
-      console.log(`process "${processTag}" having pid ${command.pid} cloded with exit code ${code}`);
-      res({command, output});
+    command.on("close", code => {
+      console.log(
+        `process "${processTag}" having pid ${
+          command.pid
+        } cloded with exit code ${code}`
+      );
+      res({ command, output });
     });
   });
 };
 
-const listProcessesOnPort = (port) => {
-  let platform = process.platform;
+const listProcessesOnPortLinux = port => {
+  const processTag = `listProcessesOnPortLinux`;
+  const output = [];
+  return new Promise(res => {
+    const listPidBatPath = require.resolve(
+      `${__dirname}/../../scripts/linux/list-pid.sh`
+    );
+    const shellCommand = `${listPidBatPath} ${port}`;
+    console.log(`executing: "${shellCommand}"`);
+    const command = spawn(shellCommand, {
+      shell: true
+    });
+    command.stdout.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+      );
+      output.push(data.toString());
+    });
+    command.stderr.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+      );
+    });
+    command.on("close", code => {
+      console.log(
+        `process "${processTag}" having pid ${
+          command.pid
+        } cloded with exit code ${code}`
+      );
+      res({ command, output });
+    });
+  });
+};
+
+const listProcessesOnPort = port => {
+  const { platform } = process;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
     return listProcessesOnPortWin(port);
-  } else if (platform === "linux") {
+  }
+  if (platform === "linux") {
     console.info(`platform ${platform} is supported`);
     return listProcessesOnPortLinux(port);
-  } else {
-    console.warn(`platform ${platform} might not be supported. applying linux shell commands and syntax.`);
-    try {
-      return listProcessesOnPortLinux(port);
-    } catch (e) {
-      console.error(`platform ${platform} is not supported`);
-      console.error(e);
-    }
+  }
+  try {
+    console.warn(
+      `platform ${platform} might not be supported. applying linux shell commands and syntax.`
+    );
+    return listProcessesOnPortLinux(port);
+  } catch (e) {
+    console.error(`platform ${platform} is not supported`);
+    console.error(e);
+    throw e;
   }
 };
 
-const extractPidFromOutput = (output) => {
-  let platform = process.platform;
+const extractPidFromOutput = output => {
+  const { platform } = process;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
     console.info(`extractPidFromOutput`, output);
-    let line = output[0].trim();
-    let columns = line.split(" ").filter((element) => {return element.trim() !== ""});
-    return parseInt(columns[4]);
-  } else if (platform === "linux") {
+    const line = output[0].trim();
+    const columns = line.split(" ").filter(element => {
+      return element.trim() !== "";
+    });
+    return parseInt(columns[4], 10);
+  }
+  if (platform === "linux") {
     console.info(`platform ${platform} is supported`);
     console.info(`extractPidFromOutput`, output);
-    let line = output[0].trim();
-    let columns = line.split(" ").filter((element) => {return element.trim() !== ""});
-    return parseInt(columns[6].split("/")[0]);
-  } else {
-    console.warn(`platform ${platform} might not be supported. applying linux shell commands and syntax.`);
-    try {
-      // todo
-    } catch (e) {
-      console.error(`platform ${platform} is not supported`);
-      console.error(e);
-    }
+    const line = output[0].trim();
+    const columns = line.split(" ").filter(element => {
+      return element.trim() !== "";
+    });
+    return parseInt(columns[6].split("/")[0], 10);
+  }
+  try {
+    console.warn(
+      `platform ${platform} might not be supported. applying linux shell commands and syntax.`
+    );
+    console.info(`platform ${platform} is supported`);
+    console.info(`extractPidFromOutput`, output);
+    const line = output[0].trim();
+    const columns = line.split(" ").filter(element => {
+      return element.trim() !== "";
+    });
+    return parseInt(columns[6].split("/")[0], 10);
+  } catch (e) {
+    console.error(`platform ${platform} is not supported`);
+    console.error(e);
+    throw e;
   }
 };
 
-const getPidOfProcessOnPort = (port) => {
-  let processListPromise = listProcessesOnPort(port);
-  return processListPromise.then(({command, output}) => {
-    console.info(`getPidOfProcessOnPort - the process list for processes listening on port ${port} is: \n type:${typeof output} \n${output}`);
-      return extractPidFromOutput(output);
-  });
-};
-
-const killProcessesByPidLinux = (pid) => {
-  let processTag = `killProcessesByPidLinux`;
-  let output = [];
-  return new Promise((res) => {
-    var listPidBatPath = require.resolve(`${__dirname}/../../scripts/linux/kill-pid.sh`);
-    let shellCommand = `${listPidBatPath} ${pid}`;
-    console.log(`executing: "${shellCommand}"`);
-    const command = spawn(
-      shellCommand,
-      {
-        shell: true
-      });
-    command.stdout.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stdout:\n ${data}`);
-      output.push(data.toString());
-    });
-    command.stderr.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stderr:\n ${data}`);
-    });
-    command.on('close', (code) => {
-      console.log(`process "${processTag}" having pid ${command.pid} closed with exit code ${code}`);
-      res({command, output});
-    });
-  });
-};
-
-const killProcessesByPidWin = (pid) => {
-  let processTag = `killProcessesByPidWin`;
-  let output = [];
-  return new Promise((res) => {
-    let listPidBatPath = require.resolve(`${__dirname}/../../scripts/win/kill-pid.bat`);
-    let shellCommand = `${listPidBatPath} ${pid}`;
-    console.log(`executing: "${shellCommand}"`);
-    const command = spawn(
-      shellCommand,
-      {
-        shell: true
-      } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+const getPidOfProcessOnPort = port => {
+  const processListPromise = listProcessesOnPort(port);
+  return processListPromise.then(({ output }) => {
+    console.info(
+      `getPidOfProcessOnPort - the process list for processes listening on port ${port} is: \n type:${typeof output} \n${output}`
     );
-    command.stdout.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stdout:\n ${data}`);
+    return extractPidFromOutput(output);
+  });
+};
+
+const killProcessesByPidLinux = pid => {
+  const processTag = `killProcessesByPidLinux`;
+  const output = [];
+  return new Promise(res => {
+    const listPidBatPath = require.resolve(
+      `${__dirname}/../../scripts/linux/kill-pid.sh`
+    );
+    const shellCommand = `${listPidBatPath} ${pid}`;
+    console.log(`executing: "${shellCommand}"`);
+    const command = spawn(shellCommand, {
+      shell: true
+    });
+    command.stdout.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+      );
       output.push(data.toString());
     });
-    command.stderr.on('data', (data) => {
-      console.log(`process "${processTag}" having pid ${command.pid} stderr:\n ${data}`);
+    command.stderr.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+      );
     });
-    command.on('close', (code) => {
-      console.log(`process "${processTag}" having pid ${command.pid} cloded with exit code ${code}`);
-      res({command, output});
+    command.on("close", code => {
+      console.log(
+        `process "${processTag}" having pid ${
+          command.pid
+        } closed with exit code ${code}`
+      );
+      res({ command, output });
     });
   });
 };
 
-const killProcessByPid = (pid) => {
-  let platform = process.platform;
+const killProcessesByPidWin = pid => {
+  const processTag = `killProcessesByPidWin`;
+  const output = [];
+  return new Promise(res => {
+    const listPidBatPath = require.resolve(
+      `${__dirname}/../../scripts/win/kill-pid.bat`
+    );
+    const shellCommand = `${listPidBatPath} ${pid}`;
+    console.log(`executing: "${shellCommand}"`);
+    const command = spawn(
+      shellCommand,
+      {
+        shell: true
+      } // https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+    );
+    command.stdout.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+      );
+      output.push(data.toString());
+    });
+    command.stderr.on("data", data => {
+      console.log(
+        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+      );
+    });
+    command.on("close", code => {
+      console.log(
+        `process "${processTag}" having pid ${
+          command.pid
+        } cloded with exit code ${code}`
+      );
+      res({ command, output });
+    });
+  });
+};
+
+const killProcessByPid = pid => {
+  const { platform } = process;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
     return killProcessesByPidWin(pid);
-  } else if (platform === "linux") {
+  }
+  if (platform === "linux") {
     console.info(`platform ${platform} is supported`);
     return killProcessesByPidLinux(pid);
-  } else {
-    console.warn(`platform ${platform} might not be supported. applying linux shell commands and syntax.`);
-    try {
-      return killProcessesByPidLinux(pid);
-    } catch (e) {
-      console.error(`platform ${platform} is not supported`);
-      console.error(e);
-    }
+  }
+  console.warn(
+    `platform ${platform} might not be supported. applying linux shell commands and syntax.`
+  );
+  try {
+    return killProcessesByPidLinux(pid);
+  } catch (e) {
+    console.error(`platform ${platform} is not supported`);
+    console.error(e);
+    throw e;
   }
 };
 
 const run = () => {
-  let argv = process.argv;
+  const { argv } = process;
   console.log(`running with arguments: \n ${argv.join("\n")}`);
-  let argvOptions = getArgvOptions();
-  let parsedOptions = parseArgv(argv, argvOptions);
+  const argvOptions = getArgvOptions();
+  const parsedOptions = parseArgv(argv, argvOptions);
   console.log(`parsed options: \n ${JSON.stringify(parsedOptions, null, 4)}`);
-  return listProcesses(parsedOptions).catch(e => {
-    console.error(e);
-    // process.exit(1);
-    process.exit(0);
-  });
 };
 
 module.exports = {
