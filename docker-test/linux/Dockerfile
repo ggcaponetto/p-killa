@@ -1,5 +1,5 @@
 FROM node:carbon
-WORKDIR .
+WORKDIR ./context
 COPY ./context .
 
 RUN apt-get update && apt-get install vim -y
@@ -13,10 +13,4 @@ RUN git init -q
 RUN npm i
 RUN npm run build-install-global
 RUN npm install http-server -g
-RUN http-server -p 4455 . &
-RUN echo port 4455 has been opened
-RUN netstat -anop
-RUN p-killa -p 4455
-RUN echo port 4455 has been closed
-RUN netstat -anop
 # CMD ["http-server",".","-p", "3333"]

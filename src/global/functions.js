@@ -49,14 +49,15 @@ const startHttpServer = (port, relPath, ready) => {
         shellCommand,
         {
           shell: true,
-          stdio: "inherit",
+          stdio: "ignore",
           detached: true
         } //https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
       );
       command.on('data', (data) => {
         console.log(`process stdout:\n ${data.toString()}`);
       });
-      command.on('close', (code) => {});
+      command.on('close', (code) => {
+      });
       /*
       If the unref function is called on the detached process, the parent process can exit independently of the child.
       This can be useful if the child is executing a long-running process, but to keep it running in the background the
@@ -64,7 +65,7 @@ const startHttpServer = (port, relPath, ready) => {
       */
       command.unref();
       res(command);
-    }catch (e) {
+    } catch (e) {
       console.error(e);
       rej(e.message);
     }
@@ -98,25 +99,29 @@ const listProcesses = (parsedOptions) => {
     });
   };
   const listProcessedLinux = (parsedOptions) => {
-    return new Promise((res, rej) => {
+    let output = [];
+    return new Promise((res) => {
       var listPidBatPath = require.resolve(`${__dirname}/../../scripts/linux/list-pid.sh`);
       let portOption = parsedOptions.filter((option) => {
         return option.name === "port";
       })[0];
-      console.log(`executing ${listPidBatPath} with arg:\n ${JSON.stringify(portOption)}`);
-      const command = spawn(listPidBatPath, [`${portOption.value}`]);
+      let shellCommand = `${listPidBatPath} ${portOption.value}`;
+      console.log(`executing: "${shellCommand}"`);
+      const command = spawn(
+        shellCommand,
+        {
+          shell: true
+        });
       command.stdout.on('data', (data) => {
         console.log(`process stdout:\n ${data}`);
+        output.push(data.toString());
       });
       command.stderr.on('data', (data) => {
         console.log(`process stderr:\n ${data}`);
       });
       command.on('close', (code) => {
-        if (code === 0) {
-          res(`process exited with code ${code}`);
-        } else {
-          rej(`process exited with code ${code}`);
-        }
+        console.log(`process close:\n ${code}`);
+        res({command, output});
       });
     });
   };
@@ -124,14 +129,14 @@ const listProcesses = (parsedOptions) => {
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
     return listProcessedWin(parsedOptions);
-  } else if(platform === "linux"){
+  } else if (platform === "linux") {
     console.info(`platform ${platform} is supported`);
     return listProcessedLinux(parsedOptions);
   } else {
     console.warn(`platform ${platform} might not be supported. applying linux shell commands and syntax`);
     try {
       return listProcessedLinux(parsedOptions);
-    }catch (e) {
+    } catch (e) {
       console.error(`platform ${platform} is not supported`);
       console.error(e);
     }
