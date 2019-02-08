@@ -2,11 +2,6 @@
 const {spawn} = require("child_process");
 // const { fork } = require("child_process");
 
-let console = this.console;
-let Promise = this.Promise;
-let __dirname = this.__dirname;
-let process = this.process;
-
 const getArgvOptions = () => {
   const options = [
     {
@@ -394,7 +389,7 @@ const run = async () => {
   }
 };
 
-this.module.exports = {
+module.exports = {
   startHttpServer,
   listProcessesOnPort,
   getPidOfProcessOnPort,
