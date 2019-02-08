@@ -7,10 +7,11 @@
 
   ],
   "env": {
-    "jest": true
+    "jest": true,
+    "node": true,
+    "es6": true
   },
   "rules": {
-      "no-console": "warn",
-      "no-undef": "warn"
+      "no-console": "warn"
   }
 }
