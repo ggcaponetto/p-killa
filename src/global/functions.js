@@ -1,6 +1,11 @@
 #!/usr/bin/env node
-const { spawn } = require("child_process");
+const {spawn} = require("child_process");
 // const { fork } = require("child_process");
+
+let console = this.console;
+let Promise = this.Promise;
+let __dirname = this.__dirname;
+let process = this.process;
 
 const getArgvOptions = () => {
   const options = [
@@ -30,7 +35,7 @@ const parseArgv = (argv, argvOptions) => {
       });
       // console.log(`runs with option ${argvOption.name} (${argvOption.identifiers.join(" or ")}): ${runsWithOption}`);
       if (runsWithOption) {
-        options.push({ ...argvOption, value: argv[argIndex + 1] });
+        options.push({...argvOption, value: argv[argIndex + 1]});
       }
     });
   });
@@ -109,9 +114,9 @@ const listProcessesOnPortWin = port => {
       console.log(
         `process "${processTag}" having pid ${
           command.pid
-        } cloded with exit code ${code}`
+          } cloded with exit code ${code}`
       );
-      res({ command, output });
+      res({command, output});
     });
   });
 };
@@ -143,15 +148,15 @@ const listProcessesOnPortLinux = port => {
       console.log(
         `process "${processTag}" having pid ${
           command.pid
-        } cloded with exit code ${code}`
+          } cloded with exit code ${code}`
       );
-      res({ command, output });
+      res({command, output});
     });
   });
 };
 
 const listProcessesOnPort = port => {
-  const { platform } = process;
+  const {platform} = process;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
     return listProcessesOnPortWin(port);
@@ -173,7 +178,7 @@ const listProcessesOnPort = port => {
 };
 
 const extractPidFromOutput = output => {
-  const { platform } = process;
+  const {platform} = process;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
     console.info(`extractPidFromOutput`, output);
@@ -212,7 +217,7 @@ const extractPidFromOutput = output => {
 
 const getPidOfProcessOnPort = port => {
   const processListPromise = listProcessesOnPort(port);
-  return processListPromise.then(({ output }) => {
+  return processListPromise.then(({output}) => {
     console.info(
       `getPidOfProcessOnPort - the process list for processes listening on port ${port} is: \n type:${typeof output} \n${output}`
     );
@@ -247,9 +252,9 @@ const killProcessesByPidLinux = pid => {
       console.log(
         `process "${processTag}" having pid ${
           command.pid
-        } closed with exit code ${code}`
+          } closed with exit code ${code}`
       );
-      res({ command, output });
+      res({command, output});
     });
   });
 };
@@ -282,15 +287,17 @@ const killProcessesByPidWin = pid => {
     });
     command.on("close", code => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} closed with exit code ${code}`
+        `process "${processTag}" having pid ${
+          command.pid
+          } closed with exit code ${code}`
       );
-      res({ command, output });
+      res({command, output});
     });
   });
 };
 
 const killProcessByPid = pid => {
-  const { platform } = process;
+  const {platform} = process;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
     return killProcessesByPidWin(pid);
@@ -311,44 +318,50 @@ const killProcessByPid = pid => {
   }
 };
 
-const checkArgs = (parsedOptions) => {
-  let functionTag = "checkArgs";
+const checkArgs = parsedOptions => {
+  const functionTag = "checkArgs";
   console.log(`${functionTag} checking the arguments: \n ${parsedOptions}`);
   let port;
   try {
-    port = parsedOptions.filter((option) => {return option.name === "port"})[0].value;
-  }catch (e) {
+    port = parsedOptions.filter(option => {
+      return option.name === "port";
+    })[0].value;
+  } catch (e) {
     console.warn(`${functionTag}`, e);
     throw e;
   }
   let ports;
   try {
-    ports = parsedOptions.filter((option) => {return option.name === "ports"})[0].value;
-  }catch (e) {
+    ports = parsedOptions.filter(option => {
+      return option.name === "ports";
+    })[0].value;
+  } catch (e) {
     console.warn(`${functionTag}`, e);
     throw e;
   }
   return (
     typeof port !== "undefined" || typeof ports !== "undefined"
     // todo
-  )
+  );
 };
 
 const printUsage = () => {
   // let functionTag = "printUsage";
-  let tabs = `        `;
+  const tabs = `        `;
   console.info("p-killa usage:");
   console.info("");
   console.info("p-killa [options]");
   console.info("");
   console.info(`--port (-p) ${tabs} Single port to kill {number, required}`);
   console.info(`or`);
-  console.info(`--ports (-pp) ${tabs} Multiple ports to kill, comma separated {string, required, e.g. 3002,8080,9000}`);
+  console.info(
+    `--ports (-pp) ${tabs} Multiple ports to kill, comma separated {string, required, e.g. 3002,8080,9000}`
+  );
   console.info("");
 };
 
 const run = async () => {
-  const { argv } = process;
+  const {argv} = process;
   console.log(`running with arguments: \n ${argv.join("\n")}`);
 
   let argvOptions;
@@ -358,8 +371,8 @@ const run = async () => {
     argvOptions = getArgvOptions();
     parsedOptions = parseArgv(argv, argvOptions);
     console.log(`parsed options: \n ${JSON.stringify(parsedOptions, null, 4)}`);
-    let isValidOptions = checkArgs(parsedOptions);
-    if(!isValidOptions){
+    const isValidOptions = checkArgs(parsedOptions);
+    if (!isValidOptions) {
       throw new Error("invalid options passed to p-killa");
     }
   } catch (e) {
@@ -367,8 +380,10 @@ const run = async () => {
   }
 
   try {
-    let processTag = "main";
-    const port = parsedOptions.filter((option) => {return option.name === "port"})[0].value;
+    const processTag = "main";
+    const port = parsedOptions.filter(option => {
+      return option.name === "port";
+    })[0].value;
     console.log(`${processTag} killing process on port ${port}`);
     const pid = await getPidOfProcessOnPort(port);
     console.log(`${processTag} the process on port ${port} has pid ${pid}`);
@@ -379,8 +394,7 @@ const run = async () => {
   }
 };
 
-
-module.exports = {
+this.module.exports = {
   startHttpServer,
   listProcessesOnPort,
   getPidOfProcessOnPort,

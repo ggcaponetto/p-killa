@@ -1,16 +1,15 @@
 {
   "parser": "babel-eslint",
   "extends": [
-    "airbnb-base",
-    "plugin:prettier/recommended",
-    "prettier/flowtype"
+    "eslint:recommended"
   ],
   "plugins": [
+
   ],
   "env": {
     "jest": true
   },
   "rules": {
-    "flowtype-errors/show-errors": "error"
+      "no-console": "warn"
   }
 }
