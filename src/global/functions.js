@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const {spawn} = require("child_process");
+const chalk = require('chalk');
 // const { fork } = require("child_process");
 
 const getArgvOptions = () => {
@@ -313,8 +314,8 @@ const killProcessByPid = pid => {
   }
 };
 
-const checkArgs = parsedOptions => {
-  const functionTag = "checkArgs";
+const isArgsValid = parsedOptions => {
+  const functionTag = "isArgsValid";
   console.log(`${functionTag} checking the arguments: \n ${parsedOptions}`);
   let port;
   try {
@@ -334,10 +335,25 @@ const checkArgs = parsedOptions => {
     console.warn(`${functionTag}`, e);
     throw e;
   }
-  return (
-    typeof port !== "undefined" || typeof ports !== "undefined"
-    // todo
-  );
+  console.log(`${functionTag} checking the arguments`, {port, ports});
+  let hasOnlyOnePortCommand = () => {
+    return (
+      (
+        typeof port !== "undefined" ||
+        typeof ports !== "undefined"
+      ) &&
+      !(
+        typeof port !== "undefined" &&
+        typeof ports !== "undefined"
+      )
+    );
+  };
+  try {
+    return hasOnlyOnePortCommand();
+  }catch (e) {
+    console.warn(`${functionTag}`, e);
+    return false;
+  }
 };
 
 const printUsage = () => {
@@ -366,12 +382,14 @@ const run = async () => {
     argvOptions = getArgvOptions();
     parsedOptions = parseArgv(argv, argvOptions);
     console.log(`parsed options: \n ${JSON.stringify(parsedOptions, null, 4)}`);
-    const isValidOptions = checkArgs(parsedOptions);
-    if (!isValidOptions) {
+    const isValidOptions = isArgsValid(parsedOptions);
+    if(!isValidOptions){
       throw new Error("invalid options passed to p-killa");
     }
   } catch (e) {
+    console.error(chalk.red(e.message));
     printUsage();
+    process.exit(1);
   }
 
   try {

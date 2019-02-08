@@ -12,6 +12,6 @@
     "es6": true
   },
   "rules": {
-      "no-console": "warn"
+      "no-console": "off"
   }
 }
