@@ -7,6 +7,10 @@ const getArgvOptions = () => {
     {
       name: "port",
       identifiers: ["--port", "-p"]
+    },
+    {
+      name: "ports",
+      identifiers: ["--ports", "-pp"]
     }
   ];
   return options;
@@ -278,9 +282,7 @@ const killProcessesByPidWin = pid => {
     });
     command.on("close", code => {
       console.log(
-        `process "${processTag}" having pid ${
-          command.pid
-        } cloded with exit code ${code}`
+        `process "${processTag}" having pid ${command.pid} closed with exit code ${code}`
       );
       res({ command, output });
     });
@@ -309,13 +311,74 @@ const killProcessByPid = pid => {
   }
 };
 
-const run = () => {
+const checkArgs = (parsedOptions) => {
+  let functionTag = "checkArgs";
+  console.log(`${functionTag} checking the arguments: \n ${parsedOptions}`);
+  let port;
+  try {
+    port = parsedOptions.filter((option) => {return option.name === "port"})[0].value;
+  }catch (e) {
+    console.warn(`${functionTag}`, e);
+    throw e;
+  }
+  let ports;
+  try {
+    ports = parsedOptions.filter((option) => {return option.name === "ports"})[0].value;
+  }catch (e) {
+    console.warn(`${functionTag}`, e);
+    throw e;
+  }
+  return (
+    typeof port !== "undefined" || typeof ports !== "undefined"
+    // todo
+  )
+};
+
+const printUsage = () => {
+  // let functionTag = "printUsage";
+  let tabs = `        `;
+  console.info("p-killa usage:");
+  console.info("");
+  console.info("p-killa [options]");
+  console.info("");
+  console.info(`--port (-p) ${tabs} Single port to kill {number, required}`);
+  console.info(`or`);
+  console.info(`--ports (-pp) ${tabs} Multiple ports to kill, comma separated {string, required, e.g. 3002,8080,9000}`);
+  console.info("");
+};
+
+const run = async () => {
   const { argv } = process;
   console.log(`running with arguments: \n ${argv.join("\n")}`);
-  const argvOptions = getArgvOptions();
-  const parsedOptions = parseArgv(argv, argvOptions);
-  console.log(`parsed options: \n ${JSON.stringify(parsedOptions, null, 4)}`);
+
+  let argvOptions;
+  let parsedOptions;
+
+  try {
+    argvOptions = getArgvOptions();
+    parsedOptions = parseArgv(argv, argvOptions);
+    console.log(`parsed options: \n ${JSON.stringify(parsedOptions, null, 4)}`);
+    let isValidOptions = checkArgs(parsedOptions);
+    if(!isValidOptions){
+      throw new Error("invalid options passed to p-killa");
+    }
+  } catch (e) {
+    printUsage();
+  }
+
+  try {
+    let processTag = "main";
+    const port = parsedOptions.filter((option) => {return option.name === "port"})[0].value;
+    console.log(`${processTag} killing process on port ${port}`);
+    const pid = await getPidOfProcessOnPort(port);
+    console.log(`${processTag} the process on port ${port} has pid ${pid}`);
+    return await killProcessByPid(pid);
+  } catch (e) {
+    console.error(e);
+    printUsage();
+  }
 };
+
 
 module.exports = {
   startHttpServer,
