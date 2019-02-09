@@ -6,12 +6,16 @@ const chalk = require('chalk');
 const getArgvOptions = () => {
   const options = [
     {
-      name: "port",
-      identifiers: ["--port", "-p"]
+      name: "help",
+      identifiers: ["--help", "-h"]
     },
     {
       name: "ports",
       identifiers: ["--ports", "-pp"]
+    },
+    {
+      name: "delayed",
+      identifiers: ["--delayed", "-d"]
     }
   ];
   return options;
@@ -81,7 +85,7 @@ const startHttpServer = (port, relPath) => {
 };
 
 const listProcessesOnPortWin = port => {
-  const processTag = `listProcessesOnPortWin`;
+  const functionTag = `listProcessesOnPortWin`;
   const output = [];
   return new Promise(res => {
     const listPidBatPath = require.resolve(
@@ -97,18 +101,18 @@ const listProcessesOnPortWin = port => {
     );
     command.stdout.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
       );
       output.push(data.toString());
     });
     command.stderr.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
       );
     });
     command.on("close", code => {
       console.log(
-        `process "${processTag}" having pid ${
+        `process "${functionTag}" having pid ${
           command.pid
           } cloded with exit code ${code}`
       );
@@ -118,7 +122,7 @@ const listProcessesOnPortWin = port => {
 };
 
 const listProcessesOnPortLinux = port => {
-  const processTag = `listProcessesOnPortLinux`;
+  const functionTag = `listProcessesOnPortLinux`;
   const output = [];
   return new Promise(res => {
     const listPidBatPath = require.resolve(
@@ -131,18 +135,18 @@ const listProcessesOnPortLinux = port => {
     });
     command.stdout.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
       );
       output.push(data.toString());
     });
     command.stderr.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
       );
     });
     command.on("close", code => {
       console.log(
-        `process "${processTag}" having pid ${
+        `process "${functionTag}" having pid ${
           command.pid
           } cloded with exit code ${code}`
       );
@@ -222,7 +226,7 @@ const getPidOfProcessOnPort = port => {
 };
 
 const killProcessesByPidLinux = pid => {
-  const processTag = `killProcessesByPidLinux`;
+  const functionTag = `killProcessesByPidLinux`;
   const output = [];
   return new Promise(res => {
     const listPidBatPath = require.resolve(
@@ -235,18 +239,18 @@ const killProcessesByPidLinux = pid => {
     });
     command.stdout.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
       );
       output.push(data.toString());
     });
     command.stderr.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
       );
     });
     command.on("close", code => {
       console.log(
-        `process "${processTag}" having pid ${
+        `process "${functionTag}" having pid ${
           command.pid
           } closed with exit code ${code}`
       );
@@ -256,7 +260,7 @@ const killProcessesByPidLinux = pid => {
 };
 
 const killProcessesByPidWin = pid => {
-  const processTag = `killProcessesByPidWin`;
+  const functionTag = `killProcessesByPidWin`;
   const output = [];
   return new Promise(res => {
     const listPidBatPath = require.resolve(
@@ -272,18 +276,18 @@ const killProcessesByPidWin = pid => {
     );
     command.stdout.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stdout:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
       );
       output.push(data.toString());
     });
     command.stderr.on("data", data => {
       console.log(
-        `process "${processTag}" having pid ${command.pid} stderr:\n ${data}`
+        `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
       );
     });
     command.on("close", code => {
       console.log(
-        `process "${processTag}" having pid ${
+        `process "${functionTag}" having pid ${
           command.pid
           } closed with exit code ${code}`
       );
@@ -317,41 +321,48 @@ const killProcessByPid = pid => {
 const isArgsValid = parsedOptions => {
   const functionTag = "isArgsValid";
   console.log(`${functionTag} checking the arguments: \n ${JSON.stringify(parsedOptions, null, 4)}`);
-  let port;
+
+  let help;
   try {
-    port = parsedOptions.filter(option => {
-      return option.name === "port";
+    help = parsedOptions.filter(option => {
+      return option.name === "help";
+    }).length > 0;
+  } catch (e) {
+    console.warn(chalk.cyan(`${functionTag}- help option`), e.message);
+  }
+
+  let delay;
+  try {
+    delay = parsedOptions.filter(option => {
+      return option.name === "delay";
     })[0].value;
   } catch (e) {
-    console.warn(chalk.cyan(`${functionTag}`), e);
+    console.warn(chalk.cyan(`${functionTag} - delay option`), e.message);
   }
+
   let ports;
   try {
     ports = parsedOptions.filter(option => {
       return option.name === "ports";
     })[0].value;
   } catch (e) {
-    console.warn(chalk.cyan(`${functionTag}`), e);
+    console.warn(chalk.cyan(`${functionTag} - ports option`), e.message);
   }
-  console.log(`${functionTag} checking the arguments`, {port, ports});
-  let hasOnlyOnePortCommand = () => {
-    let hasOnlyOneCommand = (
+
+  console.log(`${functionTag} checking the arguments`, {help, ports, delay});
+  let isValidArguments = () => {
+    let isValid = (
       (
-        typeof port !== "undefined" ||
-        typeof ports !== "undefined"
-      ) &&
-      !(
-        typeof port !== "undefined" &&
-        typeof ports !== "undefined"
+        typeof ports !== "undefined" || typeof help !== "undefined"
       )
     );
-    console.log(`${functionTag} checking the arguments - hasOnlyOneCommand`, {hasOnlyOneCommand});
-    return hasOnlyOneCommand;
+    console.log(`${functionTag} checking the arguments - isValidArguments`, {isValidArguments: isValid});
+    return isValid;
   };
   try {
-    return hasOnlyOnePortCommand();
+    return isValidArguments();
   } catch (e) {
-    console.warn(`${functionTag}`, e);
+    console.warn(chalk.red(`${functionTag} - option error`), e.message);
     return false;
   }
 };
@@ -359,28 +370,29 @@ const isArgsValid = parsedOptions => {
 const printUsage = () => {
   // let functionTag = "printUsage";
   const tabs = `        `;
-  console.info("p-killa usage:");
-  console.info("");
-  console.info("p-killa [options]");
-  console.info("");
-  console.info(`--port (-p) ${tabs} Single port to kill {number, required}`);
-  console.info(`or`);
+  console.info(chalk.yellow("p-killa usage:"));
+  console.info(chalk.yellow("p-killa [options]"));
   console.info(
-    `--ports (-pp) ${tabs} Multiple ports to kill, comma separated {string, required, e.g. 3002,8080,9000}`
+    chalk.yellow(`--help (-h) ${tabs} Prints this.`)
   );
-  console.info("");
+  console.info(
+    chalk.yellow(`--ports (-pp) ${tabs} Multiple ports to kill, comma separated {string, required, e.g. 3002,8080,9000}`)
+  );
+  console.info(
+    chalk.yellow(`--delay (-d) ${tabs} Delay the killing of the process by the passed amount of milliseconds (e.g. 2000)`)
+  );
 };
 
 const killProcessesOnPort = async (port) => {
-  let processTag = "killProcessesOnPort";
-  console.log(`${processTag} killing process on port ${port}`);
+  let functionTag = "killProcessesOnPort";
+  console.log(`${functionTag} killing process on port ${port}`);
   const pid = await getPidOfProcessOnPort(port);
-  console.log(`${processTag} the process on port ${port} has pid ${pid}`);
+  console.log(`${functionTag} the process on port ${port} has pid ${pid}`);
   return await killProcessByPid(pid);
 };
 
 const run = async () => {
-  let processTag = "run";
+  let functionTag = "run";
   const {argv} = process;
   console.log(`running with arguments: \n ${argv.join("\n")}`);
 
@@ -395,37 +407,51 @@ const run = async () => {
     if (isValidOptions === false) {
       throw new Error("invalid options passed to p-killa");
     } else {
-
-      let port;
+      let help;
       try {
-        port = parsedOptions.filter(option => {
-          return option.name === "port";
+        help = parsedOptions.filter(option => {
+          return option.name === "help";
+        }).length > 0;
+      } catch (e) {
+        console.warn(chalk.cyan(`${functionTag}`), e);
+      }
+
+      let delay;
+      try {
+        delay = parsedOptions.filter(option => {
+          return option.name === "delay";
         })[0].value;
       } catch (e) {
-        console.warn(chalk.cyan(`${processTag}`), e);
+        console.warn(chalk.cyan(`${functionTag}`), e);
       }
+
       let ports;
       try {
         ports = parsedOptions.filter(option => {
           return option.name === "ports";
         })[0].value;
       } catch (e) {
-        console.warn(chalk.cyan(`${processTag}`), e);
+        console.warn(chalk.cyan(`${functionTag}`), e);
       }
 
-      if (typeof port !== "undefined") {
-        console.error(chalk.blue(`${processTag} killing single port ${port}`));
+      console.log(chalk.green("you are runing with options:"), {help, delay, ports});
+      if(help){
+        console.log(chalk.green("i'm happy to help you.."));
+        printUsage();
+        process.exit(1);
+      } else if (typeof port !== "undefined") {
+        console.error(chalk.blue(`${functionTag} killing single port ${ports}`));
         return await killProcessesOnPort(parsedOptions);
       } else if (typeof ports !== "undefined") {
         let portsArray = ports.split(",").map((e) => parseInt(e.trim(), 10));
-        console.error(chalk.blue(`${processTag} killing multiple ports ${ports}`));
+        console.error(chalk.blue(`${functionTag} killing multiple ports ${ports}`));
         let killPromises = [];
         portsArray.forEach((port) => {
           killPromises.push(killProcessesOnPort(port));
         });
         return await Promise.all(portsArray);
       } else {
-        console.error(chalk.red("incorrect usage of the p-killa. shame on you."));
+        console.error(chalk.red("incorrect usage of the p-killa. try running `p-killa --help`."));
         printUsage();
         process.exit(1);
       }
