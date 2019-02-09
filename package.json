@@ -27,7 +27,7 @@
     "coverage": "npm test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
     "lint": "eslint --fix src",
-    "docs": "documentation readme src --section=API",
+    "docs": "echo no docs needed",
     "postdocs": "git add README.md",
     "clean": "rimraf dist",
     "prebuild": "npm run docs && npm run clean",
