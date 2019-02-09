@@ -14,8 +14,8 @@ const getArgvOptions = () => {
       identifiers: ["--ports", "-pp"]
     },
     {
-      name: "delayed",
-      identifiers: ["--delayed", "-d"]
+      name: "delay",
+      identifiers: ["--delay", "-d"]
     }
   ];
   return options;
@@ -225,28 +225,19 @@ const getPidOfProcessOnPort = port => {
   });
 };
 
-const killProcessesByPidLinux = pid => {
+const killProcessesByPidLinux = (pid, delay) => {
   const functionTag = `killProcessesByPidLinux`;
   const output = [];
-  return new Promise(res => {
+  if(delay){
     const listPidBatPath = require.resolve(
-      `${__dirname}/../../scripts/linux/kill-pid.sh`
+      `${__dirname}/../../scripts/linux/kill-pid-delay.sh`
     );
-    const shellCommand = `${listPidBatPath} ${pid}`;
+    const shellCommand = `${listPidBatPath} ${pid} ${delay}`;
     console.log(`executing: "${shellCommand}"`);
     const command = spawn(shellCommand, {
-      shell: true
-    });
-    command.stdout.on("data", data => {
-      console.log(
-        `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
-      );
-      output.push(data.toString());
-    });
-    command.stderr.on("data", data => {
-      console.log(
-        `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
-      );
+      shell: true,
+      stdio: "ignore",
+      detached: true
     });
     command.on("close", code => {
       console.log(
@@ -254,63 +245,126 @@ const killProcessesByPidLinux = pid => {
           command.pid
           } closed with exit code ${code}`
       );
-      res({command, output});
     });
-  });
+    command.unref();
+    let message = `${functionTag} is running in detached mode and will kill the process with id ${pid} after
+    ${delay} seconds.`;
+    console.log(chalk.cyan(message));
+    return Promise.resolve(message);
+  }else {
+    return new Promise(res => {
+      const listPidBatPath = require.resolve(
+        `${__dirname}/../../scripts/linux/kill-pid.sh`
+      );
+      const shellCommand = `${listPidBatPath} ${pid}`;
+      console.log(`executing: "${shellCommand}"`);
+      const command = spawn(shellCommand, {
+        shell: true
+      });
+      command.stdout.on("data", data => {
+        console.log(
+          `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
+        );
+        output.push(data.toString());
+      });
+      command.stderr.on("data", data => {
+        console.log(
+          `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
+        );
+      });
+      command.on("close", code => {
+        console.log(
+          `process "${functionTag}" having pid ${
+            command.pid
+            } closed with exit code ${code}`
+        );
+        res({command, output});
+      });
+    });
+  }
 };
 
-const killProcessesByPidWin = pid => {
+const killProcessesByPidWin = (pid, delay) => {
   const functionTag = `killProcessesByPidWin`;
   const output = [];
-  return new Promise(res => {
+  if(delay){
     const listPidBatPath = require.resolve(
-      `${__dirname}/../../scripts/win/kill-pid.bat`
+      `${__dirname}/../../scripts/win/kill-pid-delay.bat`
     );
-    const shellCommand = `${listPidBatPath} ${pid}`;
+    const shellCommand = `${listPidBatPath} ${pid} ${delay}`;
     console.log(`executing: "${shellCommand}"`);
     const command = spawn(
       shellCommand,
       {
-        shell: true
+        shell: true,
+        stdio: "ignore",
+        detached: true
       } // https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
     );
-    command.stdout.on("data", data => {
-      console.log(
-        `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
-      );
-      output.push(data.toString());
-    });
-    command.stderr.on("data", data => {
-      console.log(
-        `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
-      );
-    });
     command.on("close", code => {
       console.log(
         `process "${functionTag}" having pid ${
           command.pid
           } closed with exit code ${code}`
       );
-      res({command, output});
     });
-  });
+    command.unref();
+    let message = `${functionTag} is running in detached mode and will kill the process with id ${pid} after
+    ${delay} seconds.`;
+    console.log(chalk.cyan(message));
+    return Promise.resolve(message);
+  } else {
+    console.log(chalk.cyan(`${functionTag} is running in attached mode and will kill the process with id ${pid} immediately (no delay).`));
+    return new Promise(res => {
+      const listPidBatPath = require.resolve(
+        `${__dirname}/../../scripts/win/kill-pid.bat`
+      );
+      const shellCommand = `${listPidBatPath} ${pid}`;
+      console.log(`executing: "${shellCommand}"`);
+      const command = spawn(
+        shellCommand,
+        {
+          shell: true
+        } // https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+      );
+      command.stdout.on("data", data => {
+        console.log(
+          `process "${functionTag}" having pid ${command.pid} stdout:\n ${data}`
+        );
+        output.push(data.toString());
+      });
+      command.stderr.on("data", data => {
+        console.log(
+          `process "${functionTag}" having pid ${command.pid} stderr:\n ${data}`
+        );
+      });
+      command.on("close", code => {
+        console.log(
+          `process "${functionTag}" having pid ${
+            command.pid
+            } closed with exit code ${code}`
+        );
+        res({command, output});
+      });
+    });
+  }
 };
 
-const killProcessByPid = pid => {
+const killProcessByPid = (pid, delay) => {
   const {platform} = process;
   if (platform === "win32") {
     console.info(`platform ${platform} is supported`);
-    return killProcessesByPidWin(pid);
+    return killProcessesByPidWin(pid, delay);
   }
   if (platform === "linux") {
     console.info(`platform ${platform} is supported`);
-    return killProcessesByPidLinux(pid);
+    return killProcessesByPidLinux(pid, delay);
   }
   console.warn(
     `platform ${platform} might not be supported. applying linux shell commands and syntax.`
   );
   try {
-    return killProcessesByPidLinux(pid);
+    return killProcessesByPidLinux(pid, delay);
   } catch (e) {
     console.error(`platform ${platform} is not supported`);
     console.error(e);
@@ -383,12 +437,12 @@ const printUsage = () => {
   );
 };
 
-const killProcessesOnPort = async (port) => {
+const killProcessesOnPort = async (port, delay) => {
   let functionTag = "killProcessesOnPort";
-  console.log(`${functionTag} killing process on port ${port}`);
+  console.log(`${functionTag} killing process on port ${port} with (delay ${!!delay.toString()})`);
   const pid = await getPidOfProcessOnPort(port);
   console.log(`${functionTag} the process on port ${port} has pid ${pid}`);
-  return await killProcessByPid(pid);
+  return await killProcessByPid(pid, delay);
 };
 
 const run = async () => {
@@ -421,6 +475,7 @@ const run = async () => {
         delay = parsedOptions.filter(option => {
           return option.name === "delay";
         })[0].value;
+        delay = parseInt(delay, 10);
       } catch (e) {
         console.warn(chalk.cyan(`${functionTag}`), e);
       }
@@ -439,15 +494,12 @@ const run = async () => {
         console.log(chalk.green("i'm happy to help you.."));
         printUsage();
         process.exit(1);
-      } else if (typeof port !== "undefined") {
-        console.error(chalk.blue(`${functionTag} killing single port ${ports}`));
-        return await killProcessesOnPort(parsedOptions);
-      } else if (typeof ports !== "undefined") {
+      } if (typeof ports !== "undefined") {
         let portsArray = ports.split(",").map((e) => parseInt(e.trim(), 10));
-        console.error(chalk.blue(`${functionTag} killing multiple ports ${ports}`));
+        console.error(chalk.blue(`${functionTag} killing multiple ports ${ports}, delay ${delay}`));
         let killPromises = [];
         portsArray.forEach((port) => {
-          killPromises.push(killProcessesOnPort(port));
+          killPromises.push(killProcessesOnPort(port, delay));
         });
         return await Promise.all(portsArray);
       } else {
