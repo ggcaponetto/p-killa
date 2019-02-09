@@ -1,9 +1,9 @@
 {
   "name": "p-killa",
-  "version": "0.0.1-alpa",
+  "version": "1.0.0",
   "description": "A process killer for windows and linux",
   "license": "MIT",
-  "repository": "",
+  "repository": "ggcaponetto/p-killa",
   "main": "dist/global/index.js",
   "bin": {
     "p-killa": "./dist/global/index.js"
