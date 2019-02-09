@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const {spawn} = require("child_process");
-const chalk = require('chalk');
+import chalk from "chalk";
 // const { fork } = require("child_process");
 
 const getArgvOptions = () => {
