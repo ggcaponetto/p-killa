@@ -316,15 +316,14 @@ const killProcessByPid = pid => {
 
 const isArgsValid = parsedOptions => {
   const functionTag = "isArgsValid";
-  console.log(`${functionTag} checking the arguments: \n ${parsedOptions}`);
+  console.log(`${functionTag} checking the arguments: \n ${JSON.stringify(parsedOptions, null, 4)}`);
   let port;
   try {
     port = parsedOptions.filter(option => {
       return option.name === "port";
     })[0].value;
   } catch (e) {
-    console.warn(`${functionTag}`, e);
-    throw e;
+    console.warn(chalk.cyan(`${functionTag}`), e);
   }
   let ports;
   try {
@@ -332,12 +331,11 @@ const isArgsValid = parsedOptions => {
       return option.name === "ports";
     })[0].value;
   } catch (e) {
-    console.warn(`${functionTag}`, e);
-    throw e;
+    console.warn(chalk.cyan(`${functionTag}`), e);
   }
   console.log(`${functionTag} checking the arguments`, {port, ports});
   let hasOnlyOnePortCommand = () => {
-    return (
+    let hasOnlyOneCommand = (
       (
         typeof port !== "undefined" ||
         typeof ports !== "undefined"
@@ -347,10 +345,12 @@ const isArgsValid = parsedOptions => {
         typeof ports !== "undefined"
       )
     );
+    console.log(`${functionTag} checking the arguments - hasOnlyOneCommand`, {hasOnlyOneCommand});
+    return hasOnlyOneCommand;
   };
   try {
     return hasOnlyOnePortCommand();
-  }catch (e) {
+  } catch (e) {
     console.warn(`${functionTag}`, e);
     return false;
   }
@@ -371,7 +371,16 @@ const printUsage = () => {
   console.info("");
 };
 
+const killProcessesOnPort = async (port) => {
+  let processTag = "killProcessesOnPort";
+  console.log(`${processTag} killing process on port ${port}`);
+  const pid = await getPidOfProcessOnPort(port);
+  console.log(`${processTag} the process on port ${port} has pid ${pid}`);
+  return await killProcessByPid(pid);
+};
+
 const run = async () => {
+  let processTag = "run";
   const {argv} = process;
   console.log(`running with arguments: \n ${argv.join("\n")}`);
 
@@ -383,29 +392,51 @@ const run = async () => {
     parsedOptions = parseArgv(argv, argvOptions);
     console.log(`parsed options: \n ${JSON.stringify(parsedOptions, null, 4)}`);
     const isValidOptions = isArgsValid(parsedOptions);
-    if(!isValidOptions){
+    if (isValidOptions === false) {
       throw new Error("invalid options passed to p-killa");
+    } else {
+
+      let port;
+      try {
+        port = parsedOptions.filter(option => {
+          return option.name === "port";
+        })[0].value;
+      } catch (e) {
+        console.warn(chalk.cyan(`${processTag}`), e);
+      }
+      let ports;
+      try {
+        ports = parsedOptions.filter(option => {
+          return option.name === "ports";
+        })[0].value;
+      } catch (e) {
+        console.warn(chalk.cyan(`${processTag}`), e);
+      }
+
+      if (typeof port !== "undefined") {
+        console.error(chalk.blue(`${processTag} killing single port ${port}`));
+        return await killProcessesOnPort(parsedOptions);
+      } else if (typeof ports !== "undefined") {
+        let portsArray = ports.split(",").map((e) => parseInt(e.trim(), 10));
+        console.error(chalk.blue(`${processTag} killing multiple ports ${ports}`));
+        let killPromises = [];
+        portsArray.forEach((port) => {
+          killPromises.push(killProcessesOnPort(port));
+        });
+        return await Promise.all(portsArray);
+      } else {
+        console.error(chalk.red("incorrect usage of the p-killa. shame on you."));
+        printUsage();
+        process.exit(1);
+      }
     }
   } catch (e) {
     console.error(chalk.red(e.message));
     printUsage();
     process.exit(1);
   }
-
-  try {
-    const processTag = "main";
-    const port = parsedOptions.filter(option => {
-      return option.name === "port";
-    })[0].value;
-    console.log(`${processTag} killing process on port ${port}`);
-    const pid = await getPidOfProcessOnPort(port);
-    console.log(`${processTag} the process on port ${port} has pid ${pid}`);
-    return await killProcessByPid(pid);
-  } catch (e) {
-    console.error(e);
-    printUsage();
-  }
 };
+
 
 module.exports = {
   startHttpServer,
