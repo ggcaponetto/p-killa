@@ -439,7 +439,9 @@ const printUsage = () => {
 
 const killProcessesOnPort = async (port, delay) => {
   let functionTag = "killProcessesOnPort";
-  console.log(`${functionTag} killing process on port ${port} with (delay ${!!delay.toString()})`);
+  if(delay){
+    console.log(`${functionTag} killing process on port ${port} with (delay ${!!delay.toString()})`);
+  }
   const pid = await getPidOfProcessOnPort(port);
   console.log(`${functionTag} the process on port ${port} has pid ${pid}`);
   return await killProcessByPid(pid, delay);
