@@ -4,6 +4,7 @@ dist
 node_modules
 *.log
 
+p-killa.iml
 .idea
 docker-test/linux/context
 docker-test/linux/dist
