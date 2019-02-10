@@ -1,6 +1,6 @@
 {
   "name": "p-killa",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A process killer for windows and linux",
   "license": "MIT",
   "repository": "ggcaponetto/p-killa",
