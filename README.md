@@ -33,7 +33,7 @@ p-killa --ports 4000,3000,8080,9090
 #### kill a multiple processes with a 5 seconds delay
 
 ```bash
-p-killa --ports 4000,3000,8080,9090 4000 --delay 5
+p-killa --ports 4000,3000,8080,9090 --delay 5
 ```
 
 ## Contribute
