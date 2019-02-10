@@ -191,11 +191,11 @@ const extractPidFromOutput = output => {
   if (platform === "linux") {
     console.info(`platform ${platform} is supported`);
     console.info(`extractPidFromOutput`, output);
-    const line = output[0].trim();
+    const line = output[0].trim().split("NAME\n")[1];
     const columns = line.split(" ").filter(element => {
       return element.trim() !== "";
     });
-    return parseInt(columns[6].split("/")[0], 10);
+    return parseInt(columns[1], 10);
   }
   try {
     console.warn(
