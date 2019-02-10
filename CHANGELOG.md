@@ -1,3 +1,7 @@
+## [2.0.5](https://github.com/ggcaponetto/p-killa/compare/v2.0.4...v2.0.5) (2019-02-10)
+
+
+
 ## [2.0.4](https://github.com/ggcaponetto/p-killa/compare/v2.0.3...v2.0.4) (2019-02-10)
 
 
