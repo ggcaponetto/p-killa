@@ -1,16 +1,12 @@
 # p-killa
 
-[![forthebadge](https://forthebadge.com/images/badges/fuck-it-ship-it.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/built-by-crips.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](https://forthebadge.com)
-
-A node process killer for windows and linux.
+A Node process killer for Windows and Linux and OSX.
 
 ## Features
 
-- kill a process specifying the port it is listening to.
-- kill multiple processes occupying multiple ports.
-- the above, with a delay
+- Kill a process specifying the port it is listening to.
+- Kill multiple processes occupying multiple ports.
+- ...the above, with a delay
 
 ## Install
 
@@ -36,8 +32,15 @@ p-killa --ports 4000,3000,8080,9090
 p-killa --ports 4000,3000,8080,9090 --delay 5
 ```
 
-## Contribute
+## Sponsors
 
+This project is maintained and sponsored by:
+ - [geoimpact AG](https://www.geoimpact.ch/) 
+ 
+ 
+ <img src="https://media.licdn.com/dms/image/C560BAQGttJNI4vTkjQ/company-logo_400_400/0?e=1559174400&v=beta&t=7Wkzk_JfKBHSMQfQlP_K1nxnzdpBxJF26vSET_1IEHw" height="36">
+
+## Contribute
 This project has been bootstrapped using [nod](https://github.com/diegohaz/nod) and coded with the amazing
  [IntelliJ IDEA](https://www.jetbrains.com/idea/).
 
